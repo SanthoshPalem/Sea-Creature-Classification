@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine Life Identifier</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Discover Marine Life</h1>
+            <p>Upload an image to identify sea creatures</p>
+        </header>
+
+        <div class="upload-section">
+            <form action="/" method="post" enctype="multipart/form-data">
+                <label class="upload-label" for="file">
+                    <i class="fas fa-camera upload-icon"></i>
+                    <span>Click to upload or drag and drop</span>
+                    <input type="file" name="file" id="file" accept="image/*" required>
+                </label>
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                    Identify Creature
+                </button>
+            </form>
+        </div>
+
+        {% if image %}
+        <div class="result-card">
+            <div class="result-content">
+                <img src="{{ image }}" alt="Uploaded Image" class="uploaded-image">
+                <h2 class="result-title">
+                    <i class="fas fa-fish"></i>
+                    Detected Creature: <span class="highlight">{{ best_class }}</span>
+                </h2>
+                <p class="result-description">{{ class_description }}</p>
+                <a href="{{ wiki_link }}" class="wiki-link" target="_blank">
+                    <i class="fas fa-book-open"></i>
+                    Learn More on Wikipedia
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add image preview functionality
+        const fileInput = document.getElementById('file');
+        const uploadLabel = document.querySelector('.upload-label span');
+
+        fileInput.addEventListener('change', function(e) {
+            const fileName = e.target.files[0].name;
+            uploadLabel.textContent = fileName;
+        });
+
+        // Add drag and drop functionality
+        const uploadSection = document.querySelector('.upload-section');
+
+        uploadSection.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadSection.style.background = 'rgba(52, 152, 219, 0.1)';
+        });
+
+        uploadSection.addEventListener('dragleave', () => {
+            uploadSection.style.background = 'var(--light-bg)';
+        });
+
+        uploadSection.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadSection.style.background = 'var(--light-bg)';
+            fileInput.files = e.dataTransfer.files;
+            uploadLabel.textContent = e.dataTransfer.files[0].name;
+        });
+    </script>
+</body>
+</html>
